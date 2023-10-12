@@ -1,7 +1,7 @@
-// import { DiaryEntry } from "../src/types";
+import { Patients } from "../src/types";
 
 
-const patientsData = [
+const patientsData: Patients[] = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
         "name": "John McClane",

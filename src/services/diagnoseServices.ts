@@ -2,9 +2,12 @@
 
 import diagnosesData from "../../data/diagnoses";
 
+
 import { NonSensitiveDiagnoses, Diagnosis } from '../types';
 
 const diagnoses: Diagnosis[] = diagnosesData; 
+
+
 
 // const patients: DiaryEntry[] = patientData;
 
@@ -26,9 +29,10 @@ const diagnoses: Diagnosis[] = diagnosesData;
 // };
 
 const getNonSensitiveDiagnoses = (): NonSensitiveDiagnoses[] => {
-  return diagnoses.map(({ code, name }) => ({
+  return diagnoses.map(({ code, name, latin }) => ({
     code,
-    name
+    name,
+    latin
   }));
 };
 
