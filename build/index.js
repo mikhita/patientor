@@ -7,6 +7,11 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const PORT = 3000;
+app.use((_req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 app.get('/api/ping', (_req, res) => {
     console.log('someone pinged here');
     res.send('pong');
