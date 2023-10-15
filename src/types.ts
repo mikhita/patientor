@@ -22,13 +22,20 @@ export interface Diagnosis {
   latin?: string
 }
 
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Other = "other",
+}
+
 export interface Patients {
   id: string,
   name: string,
   ssn?: string,
   dateOfBirth: string,
-  gender: string,
+  gender: Gender,
   occupation: string
 }
 
 export type NewPatient = Omit<Patients, 'id'>;
+
