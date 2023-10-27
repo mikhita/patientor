@@ -3,11 +3,6 @@
 // export type Visibility = 'great' | 'good' | 'ok' | 'poor';
 
 // export type NonSensitiveDiaryEntry = Omit<Patients, 'comment'>;
-
-export type NonSensitivePatients = Omit<Patients, 'ssn'>;
-export type NonSensitiveDiagnoses = Omit<Diagnosis, 'latin'>;
-
-
 // export interface DiaryEntry {
 //   id: number;
 //   date: string;
@@ -15,6 +10,9 @@ export type NonSensitiveDiagnoses = Omit<Diagnosis, 'latin'>;
 //   visibility: Visibility;
 //   comment?: string;
 // }
+
+
+export type NonSensitiveDiagnoses = Omit<Diagnosis, 'latin'>;
 
 export interface Diagnosis {
   code: string,
@@ -28,14 +26,21 @@ export enum Gender {
   Other = "other",
 }
 
-export interface Patients {
-  id: string,
-  name: string,
-  ssn?: string,
-  dateOfBirth: string,
-  gender: Gender,
-  occupation: string
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Entry {
 }
 
-export type NewPatient = Omit<Patients, 'id'>;
+export interface Patient {
+  id: string;
+  name: string;
+  ssn: string;
+  occupation: string;
+  gender: Gender;
+  dateOfBirth: string;
+  entries: Entry[]
+}
+
+export type NonSensitivePatient = Omit<Patient, 'ssn' >;
+
+export type NewPatient = Omit<Patient, 'id'>;
 
