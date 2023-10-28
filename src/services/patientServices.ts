@@ -8,8 +8,7 @@ const patients: Patient[] = patientsData;
 const ID: string = uuidv1();
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
-  return patients.map(({ id, name, ssn, dateOfBirth, gender, occupation, entries }) => ({
-    id,
+  return patients.map(({ name, ssn, dateOfBirth, gender, occupation, entries }) => ({
     name,
     ssn,
     dateOfBirth,
