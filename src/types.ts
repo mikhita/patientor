@@ -35,7 +35,10 @@ export interface Patient {
   dateOfBirth: string;
   entries: Entry[]
 }
-
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
 interface BaseEntry {
   id: string;
   description: string;
@@ -87,4 +90,5 @@ export type EntryWithoutId = UnionOmit<Entry, 'id'>;
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'id' >;
 
 export type NewPatient = Omit<Patient, 'id'>;
+export type NewEntry = UnionOmit<Entry, 'id'>;
 

@@ -1,5 +1,5 @@
 
-import { NewPatient, Gender, Entry } from './types';
+import { NewPatient, Gender, Entry, NewEntry } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -29,6 +29,15 @@ const parseDateOfBirth = (dateOfBirth: unknown): string => {
       throw new Error('Incorrect date: ' + dateOfBirth);
   }
   return dateOfBirth;
+};
+const isDate = (date: string): boolean => {
+  return Boolean(Date.parse(date));
+};
+const parseDate = (date: unknown): string => {
+  if (!isString(date) || !isDate(date)) {
+      throw new Error('Incorrect date: ' + date);
+  }
+  return date;
 };
 
 const isGender = (param: string): param is Gender => {
@@ -78,4 +87,113 @@ const toNewPatient = (object: unknown): NewPatient => {
   throw new Error('Incorrect data: a field missing');
 };
 
-export default toNewPatient;
+const parseGenericString = (value: unknown, label: string): string => {
+  if (!value || !isString(value)) {
+      throw new Error('Incorrect or missing' + label + ' ' + value);
+  }
+  return value;
+};
+
+const parseGenericNumber = (value: unknown): number => {
+  return Number(value);
+};
+
+const parseGenericArrayOfStrings = (
+  value: unknown,
+  label: string
+): string[] => {
+  if (!Array.isArray(value) || !value) {
+      throw new Error('Incorrect or missing' + label + ' ' + value);
+  }
+
+  value.filter((x) => isString(x));
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return value;
+};
+export type EntryFormValues = {
+  description: unknown;
+  date: unknown;
+  specialist: unknown;
+  diagnosisCodes: unknown[];
+  type: unknown;
+  employerName: unknown;
+  discharge: {
+      date: unknown;
+      criteria: unknown;
+  };
+  sickleave: {
+      startDate: unknown;
+      endDate: unknown;
+  };
+  healthCheckRating: unknown;
+};
+
+export const ToNewEntry = ({
+  description,
+  date,
+  specialist,
+  diagnosisCodes,
+  type,
+  employerName,
+  discharge,
+  sickleave,
+  healthCheckRating,
+}: EntryFormValues): NewEntry => {
+  switch (type) {
+      case 'OccupationalHealthcare':
+          const entrOccup = {
+              description: parseGenericString(description, 'description'),
+              date: parseDate(date),
+              specialist: parseGenericString(specialist, 'specialist'),
+              diagnosisCodes: parseGenericArrayOfStrings(
+                  diagnosisCodes,
+                  'diag codes'
+              ),
+              type: 'OccupationalHealthcare' as const,
+              employerName: parseGenericString(employerName, 'employer name'),
+              sickLeave: {
+                  startDate: parseDate(sickleave.startDate),
+                  endDate: parseDate(sickleave.endDate),
+              },
+              healthCheckRating: parseGenericNumber(healthCheckRating),
+          };
+          return entrOccup;
+      case 'Hospital':
+          const entrHos = {
+              description: parseGenericString(description, 'description'),
+              date: parseDate(date),
+              specialist: parseGenericString(specialist, 'specialist'),
+              diagnosisCodes: parseGenericArrayOfStrings(
+                  diagnosisCodes,
+                  'diag codes'
+              ),
+              type: 'Hospital' as const,
+              discharge: {
+                  date: parseDate(discharge.date),
+                  criteria: parseGenericString(
+                      discharge.criteria,
+                      'criteria'
+                  ),
+              },
+          };
+          return entrHos;
+      case 'HealthCheck':
+          const entrCheck = {
+              description: parseGenericString(description, 'description'),
+              date: parseDate(date),
+              specialist: parseGenericString(specialist, 'specialist'),
+              diagnosisCodes: parseGenericArrayOfStrings(
+                  diagnosisCodes,
+                  'diag codes'
+              ),
+              type: 'HealthCheck' as const,
+              healthCheckRating: parseGenericNumber(healthCheckRating),
+          };
+          return entrCheck;
+      default:
+          throw Error;
+  }
+};
+
+export default toNewPatient ;

@@ -1,7 +1,9 @@
 import express from "express";
 
 import patientServices from "../services/patientServices";
-import toNewPatient from "../utils";
+import toNewPatient, { ToNewEntry } from "../utils";
+
+
 
 
 const router = express.Router();
@@ -11,16 +13,13 @@ router.get('/', (_req, res) => {
   res.send(patientServices.getNonSensitivePatients());
 });
 router.get('/:id', (req, res) => {
-  const { id } = req.params; // Extract the patient's ID from the request parameters
+  const { id } = req.params; 
 
-  // Find the patient with the specified ID using your patientServices
   const patient = patientServices.getPatientById(id);
 
   if (patient) {
-    // If a patient with the specified ID is found, return it
     res.json(patient);
   } else {
-    // If the patient is not found, return a 404 Not Found response
     res.status(404).json({ error: 'Patient not found' });
   }
 });
@@ -38,5 +37,18 @@ router.post('/', (req, res) => {
     res.status(400).send(errorMessage);
   }
 });
+
+router.post('/:id/entries', (req, res) => {
+  console.log(req.params.id);
+  console.log(req.body);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const newEntry = ToNewEntry(req.body);
+
+  const updatedPatient = patientServices.addEntry(req.params.id, newEntry);
+
+  res.json(updatedPatient);
+});
+
 
 export default router;
