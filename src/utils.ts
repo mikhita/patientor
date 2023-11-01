@@ -1,5 +1,5 @@
 
-import { NewPatient, Gender, Entry, NewEntry } from './types';
+import { NewPatient, Gender, Entry,  HealthCheckEntryType } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -30,15 +30,15 @@ const parseDateOfBirth = (dateOfBirth: unknown): string => {
   }
   return dateOfBirth;
 };
-const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
-};
-const parseDate = (date: unknown): string => {
-  if (!isString(date) || !isDate(date)) {
-      throw new Error('Incorrect date: ' + date);
-  }
-  return date;
-};
+// const isDate = (date: string): boolean => {
+//   return Boolean(Date.parse(date));
+// };
+// const parseDate = (date: unknown): string => {
+//   if (!isString(date) || !isDate(date)) {
+//       throw new Error('Incorrect date: ' + date);
+//   }
+//   return date;
+// };
 
 const isGender = (param: string): param is Gender => {
   return Object.values(Gender).map(v => v.toString()).includes(param);
@@ -88,28 +88,24 @@ const toNewPatient = (object: unknown): NewPatient => {
 };
 
 const parseGenericString = (value: unknown, label: string): string => {
-  if (!value || !isString(value)) {
-      throw new Error('Incorrect or missing' + label + ' ' + value);
+  if (!isString(value)) {
+    throw new Error(`Incorrect or missing ${label}: ${value}`);
   }
   return value;
 };
 
 const parseGenericNumber = (value: unknown): number => {
-  return Number(value);
+  if (typeof value !== 'number') {
+    throw new Error(`Incorrect or missing number: ${value}`);
+  }
+  return value;
 };
 
-const parseGenericArrayOfStrings = (
-  value: unknown,
-  label: string
-): string[] => {
-  if (!Array.isArray(value) || !value) {
-      throw new Error('Incorrect or missing' + label + ' ' + value);
+const parseGenericArrayOfStrings = (value: unknown[], label: string): string[] => {
+  if (!Array.isArray(value) || !value.every((x) => isString(x))) {
+    throw new Error(`Incorrect or missing ${label}: ${value}`);
   }
-
-  value.filter((x) => isString(x));
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return value;
+  return value as string[];
 };
 export type EntryFormValues = {
   description: unknown;
@@ -134,66 +130,19 @@ export const ToNewEntry = ({
   date,
   specialist,
   diagnosisCodes,
-  type,
-  employerName,
-  discharge,
-  sickleave,
   healthCheckRating,
-}: EntryFormValues): NewEntry => {
-  switch (type) {
-      case 'OccupationalHealthcare':
-          const entrOccup = {
-              description: parseGenericString(description, 'description'),
-              date: parseDate(date),
-              specialist: parseGenericString(specialist, 'specialist'),
-              diagnosisCodes: parseGenericArrayOfStrings(
-                  diagnosisCodes,
-                  'diag codes'
-              ),
-              type: 'OccupationalHealthcare' as const,
-              employerName: parseGenericString(employerName, 'employer name'),
-              sickLeave: {
-                  startDate: parseDate(sickleave.startDate),
-                  endDate: parseDate(sickleave.endDate),
-              },
-              healthCheckRating: parseGenericNumber(healthCheckRating),
-          };
-          return entrOccup;
-      case 'Hospital':
-          const entrHos = {
-              description: parseGenericString(description, 'description'),
-              date: parseDate(date),
-              specialist: parseGenericString(specialist, 'specialist'),
-              diagnosisCodes: parseGenericArrayOfStrings(
-                  diagnosisCodes,
-                  'diag codes'
-              ),
-              type: 'Hospital' as const,
-              discharge: {
-                  date: parseDate(discharge.date),
-                  criteria: parseGenericString(
-                      discharge.criteria,
-                      'criteria'
-                  ),
-              },
-          };
-          return entrHos;
-      case 'HealthCheck':
-          const entrCheck = {
-              description: parseGenericString(description, 'description'),
-              date: parseDate(date),
-              specialist: parseGenericString(specialist, 'specialist'),
-              diagnosisCodes: parseGenericArrayOfStrings(
-                  diagnosisCodes,
-                  'diag codes'
-              ),
-              type: 'HealthCheck' as const,
-              healthCheckRating: parseGenericNumber(healthCheckRating),
-          };
-          return entrCheck;
-      default:
-          throw Error;
-  }
+}: HealthCheckEntryType): HealthCheckEntryType => {
+  return {
+    type: 'HealthCheck',
+    description: parseGenericString(description, 'description'),
+    date: parseGenericString(date, 'date'),
+    specialist: parseGenericString(specialist, 'specialist'),
+    diagnosisCodes: parseGenericArrayOfStrings(
+      diagnosisCodes,
+      'diagnosisCodes'
+    ),
+    healthCheckRating: parseGenericNumber(healthCheckRating),
+  };
 };
 
 export default toNewPatient ;
