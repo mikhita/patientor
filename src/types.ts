@@ -90,6 +90,7 @@ export type EntryWithoutId = UnionOmit<Entry, 'id'>;
 export type NonSensitivePatient = Omit<Patient, 'ssn' | 'id' >;
 
 export type NewPatient = Omit<Patient, 'id'>;
+
 export interface HealthCheckEntryType {
   type: "HealthCheck";
   description: string;

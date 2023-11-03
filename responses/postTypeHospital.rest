@@ -1,0 +1,14 @@
+POST http://localhost:3000/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "type": "Hospital",
+  "description": "Hospital description",
+  "date": "2023-11-03",
+  "specialist": "Dr. Johnson",
+  "diagnosisCodes": ["D789", "D101"],
+  "discharge": {
+    "date": "2023-11-10",
+    "criteria": "Recovered"
+  }
+}

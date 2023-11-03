@@ -6,6 +6,7 @@ import toNewPatient, { ToNewEntry } from "../utils";
 
 
 
+
 const router = express.Router();
 
 
@@ -42,13 +43,18 @@ router.post('/:id/entries', (req, res) => {
   console.log(req.params.id);
   console.log(req.body);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { type, ...rest } = req.body;
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const newEntry = ToNewEntry(req.body);
+  const newEntry = ToNewEntry(rest, type);
 
   const updatedPatient = patientServices.addEntry(req.params.id, newEntry);
 
   res.json(updatedPatient);
 });
+
+
 
 
 export default router;

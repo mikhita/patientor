@@ -1,5 +1,6 @@
 
-import { NewPatient, Gender, Entry,  HealthCheckEntryType } from './types';
+import { NewPatient, Gender, Entry } from './types';
+import { v4 as uuid } from 'uuid';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -125,24 +126,60 @@ export type EntryFormValues = {
   healthCheckRating: unknown;
 };
 
-export const ToNewEntry = ({
-  description,
-  date,
-  specialist,
-  diagnosisCodes,
-  healthCheckRating,
-}: HealthCheckEntryType): HealthCheckEntryType => {
-  return {
-    type: 'HealthCheck',
-    description: parseGenericString(description, 'description'),
-    date: parseGenericString(date, 'date'),
-    specialist: parseGenericString(specialist, 'specialist'),
-    diagnosisCodes: parseGenericArrayOfStrings(
-      diagnosisCodes,
-      'diagnosisCodes'
-    ),
-    healthCheckRating: parseGenericNumber(healthCheckRating),
-  };
+export const ToNewEntry = (data: EntryFormValues, type: Entry['type']): Entry => {
+  let newEntry: Entry;
+
+  switch (type) {
+    case 'HealthCheck':
+      newEntry = {
+        id: uuid(),
+        type: 'HealthCheck',
+        description: parseGenericString(data.description, 'description'),
+        date: parseGenericString(data.date, 'date'),
+        specialist: parseGenericString(data.specialist, 'specialist'),
+        diagnosisCodes: parseGenericArrayOfStrings(data.diagnosisCodes, 'diagnosisCodes'),
+        healthCheckRating: parseGenericNumber(data.healthCheckRating),
+      };
+      break;
+
+    case 'Hospital':
+      newEntry = {
+        id: uuid(),
+        type: 'Hospital',
+        description: parseGenericString(data.description, 'description'),
+        date: parseGenericString(data.date, 'date'),
+        specialist: parseGenericString(data.specialist, 'specialist'),
+        diagnosisCodes: parseGenericArrayOfStrings(data.diagnosisCodes, 'diagnosisCodes'),
+        discharge: {
+          date: parseGenericString(data.discharge.date, 'discharge date'),
+          criteria: parseGenericString(data.discharge.criteria, 'discharge criteria'),
+        },
+      };
+      break;
+
+    case 'OccupationalHealthcare':
+      newEntry = {
+        id: uuid(),
+        type: 'OccupationalHealthcare',
+        description: parseGenericString(data.description, 'description'),
+        date: parseGenericString(data.date, 'date'),
+        specialist: parseGenericString(data.specialist, 'specialist'),
+        diagnosisCodes: parseGenericArrayOfStrings(data.diagnosisCodes, 'diagnosisCodes'),
+        employerName: parseGenericString(data.employerName, 'employerName'),
+        sickLeave: {
+          startDate: parseGenericString(data.sickleave.startDate, 'sickleave start date'),
+          endDate: parseGenericString(data.sickleave.endDate, 'sickleave end date'),
+        },
+      };
+      break;
+
+    default:
+      throw new Error(`Unsupported entry type: ${type}`);
+  }
+
+  return newEntry;
 };
+
+
 
 export default toNewPatient ;

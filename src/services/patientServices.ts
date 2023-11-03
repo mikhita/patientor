@@ -1,7 +1,7 @@
 import { v1 as uuidv1 } from 'uuid';
 import patientsData from "../../data/patients";
 
-import { NewPatient, NonSensitivePatient, Patient,  Entry, HealthCheckEntryType } from '../types';
+import { NewPatient, NonSensitivePatient, Patient,  Entry } from '../types';
 
 const patients: Patient[] = patientsData; 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
@@ -33,19 +33,8 @@ const addPatient= ( patient: NewPatient ): Patient => {
   patients.push(newPatient);
   return newPatient;
 };
-// const addEntry = (patientId: string, entry: NewEntry): Entry => {
-//   const patient = getPatientById(patientId);
 
-//   if (!patient) {
-//     throw new Error('Patient not found');
-//   }
-
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//   const newEntry: Entry = { ...entry, id: ID };
-//   patient.entries.push(newEntry);
-//   return newEntry;
-// };
-const addEntry = (patientId: string, entry: HealthCheckEntryType): Entry => {
+const addEntry = (patientId: string, entry: Entry): Entry => {
   const patient = getPatientById(patientId);
 
   if (!patient) {
@@ -58,5 +47,12 @@ const addEntry = (patientId: string, entry: HealthCheckEntryType): Entry => {
   patient.entries.push(newEntry);
   return newEntry;
 };
+
+
+
+
+
+
+
 
 export default { getNonSensitivePatients, addPatient, getPatientById , addEntry};

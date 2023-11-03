@@ -2,10 +2,11 @@ POST http://localhost:3000/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/ent
 Content-Type: application/json
 
 {
-  "date": "2015-01-02",
-  "specialist": "MD House",
-  "diagnosisCodes": ["S62.5", "s43.3"],
-  "description": "Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
-  "healthCheckRating": 0
+  "type": "HealthCheck",
+  "description": "Health check description",
+  "date": "2023-11-03",
+  "specialist": "Dr. Smith",
+  "diagnosisCodes": ["D123", "D456"],
+  "healthCheckRating": 1
 }
 
